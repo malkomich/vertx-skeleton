@@ -4,7 +4,7 @@
 
     <groupId>com.malkomich</groupId>
     <artifactId>vertx-skeleton</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,7 +39,7 @@
         <connection>scm:git:git://github.com/malkomich/vertx-skeleton.git</connection>
         <developerConnection>scm:git:git@github.com:malkomich/vertx-skeleton.git</developerConnection>
         <url>https://github.com/malkomich/vertx-skeleton</url>
-        <tag>vertx-skeleton-1.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <profiles>
