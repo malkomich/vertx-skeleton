@@ -14,7 +14,11 @@ import java.util.Objects;
 
 
 public class PropertiesConfig {
+
     private static final int SCAN_PERIOD = 2000;
+    private static final String TYPE_ENVIRONMENT = "env";
+    private static final String TYPE_FILE = "file";
+    private static final String PATH = "path";
 
     private ConfigRetriever configRetriever;
 
@@ -43,15 +47,15 @@ public class PropertiesConfig {
         final String route = Objects.requireNonNull(getClass().getClassLoader().getResource(configFileName)).getPath();
         if (new File(route).exists()) {
             final ConfigStoreOptions config = new ConfigStoreOptions()
-                .setType("file")
-                .setConfig(new JsonObject().put("path", route));
+                .setType(TYPE_FILE)
+                .setConfig(new JsonObject().put(PATH, route));
             configRetrieverOptions.addStore(config);
         }
     }
 
     private void envStore(final ConfigRetrieverOptions configRetrieverOptions) {
         final ConfigStoreOptions config = new ConfigStoreOptions()
-            .setType("env");
+            .setType(TYPE_ENVIRONMENT);
         configRetrieverOptions.addStore(config);
     }
 

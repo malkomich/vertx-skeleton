@@ -21,7 +21,11 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.malkomich.vertx.skeleton.rest.HttpVerticle.ADDRESS;
+import static com.malkomich.vertx.skeleton.rest.HttpVerticle.SERVICE_CLASS;
+
 public class VerticleLauncher {
+
     private static final long BLOCK_THREAD_CHECK_INTERVAL = 60000L;
     private static final String DEFAULT_CONFIG_FILE_NAME = "config.json";
 
@@ -31,12 +35,16 @@ public class VerticleLauncher {
 
     private Vertx vertx;
 
-    public VerticleLauncher(final List<Class> configModuleClasses,
-                            final List<Class> verticleClasses,
-                            final JsonObject httpServicesConfig) {
+    VerticleLauncher(final List<Class> configModuleClasses,
+                     final List<Class> verticleClasses,
+                     final JsonObject httpServicesConfig) {
         this.configModuleClasses = configModuleClasses;
         this.verticleClasses = verticleClasses;
         this.httpServicesConfig = httpServicesConfig;
+    }
+
+    public static VerticleLauncher.VerticleLauncherBuilder builder() {
+        return new VerticleLauncherBuilder();
     }
 
     public void launch() {
@@ -113,5 +121,47 @@ public class VerticleLauncher {
             verticleFutures.add(httpVerticleFuture);
         }
         return CompositeFuture.all(verticleFutures);
+    }
+
+    public static class VerticleLauncherBuilder {
+        private List<Class> configModuleClasses;
+        private List<Class> verticleClasses;
+        private JsonObject httpServicesConfig;
+
+        VerticleLauncherBuilder() {
+            httpServicesConfig = new JsonObject();
+        }
+
+        public VerticleLauncher.VerticleLauncherBuilder configModules(final Class ...configModuleClasses) {
+            this.configModuleClasses = Arrays.asList(configModuleClasses);
+            return this;
+        }
+
+        public VerticleLauncher.VerticleLauncherBuilder verticles(final Class ...verticleClasses) {
+            this.verticleClasses = Arrays.asList(verticleClasses);
+            return this;
+        }
+
+        public VerticleLauncherBuilder withPublicEndpoint(final String path,
+                                                           final String eventBusAddress,
+                                                           final Class<? extends VertxService> service) {
+
+            final JsonObject pathConfig = new JsonObject()
+                    .put(ADDRESS, eventBusAddress)
+                    .put(SERVICE_CLASS, service.getCanonicalName());
+            httpServicesConfig.put(path, pathConfig);
+            return this;
+        }
+
+        public void execute() {
+            new VerticleLauncher(configModuleClasses, verticleClasses, httpServicesConfig)
+                    .launch();
+        }
+
+        public String toString() {
+            return "VerticleLauncher.VerticleLauncherBuilder(configModuleClasses=" + this.configModuleClasses
+                    + ", verticleClasses=" + this.verticleClasses
+                    + ", httpServicesConfig=" + this.httpServicesConfig + ")";
+        }
     }
 }
