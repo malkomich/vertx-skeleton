@@ -1,11 +1,7 @@
-package com.malkomich.vertx.skeleton.verticle;
+package com.github.malkomich.vertx.verticle;
 
-import com.malkomich.vertx.skeleton.VertxService;
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.Context;
-import io.vertx.core.Future;
-import io.vertx.core.Vertx;
-import io.vertx.core.VertxException;
+import com.github.malkomich.vertx.VertxService;
+import io.vertx.core.*;
 import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.serviceproxy.ServiceBinder;
@@ -14,8 +10,8 @@ import java.util.Arrays;
 
 public abstract class ServiceVerticle<T extends VertxService> extends AbstractVerticle {
 
-    private MessageConsumer binder;
-    private T service;
+    private MessageConsumer<JsonObject> binder;
+    protected T service;
 
     @Override
     public void init(final Vertx vertx, final Context context) {
@@ -34,7 +30,7 @@ public abstract class ServiceVerticle<T extends VertxService> extends AbstractVe
                 .setAddress(eventBusAddress())
                 .register(serviceClass(), service);
 
-        binder.completionHandler(startFuture);
+        binder.completionHandler(service.init(startFuture));
     }
 
     @Override
@@ -47,10 +43,11 @@ public abstract class ServiceVerticle<T extends VertxService> extends AbstractVe
 
     protected abstract String eventBusAddress();
 
-    private Class serviceClass() {
+    private Class<T> serviceClass() {
         return Arrays.stream(service.getClass().getInterfaces())
                 .filter(VertxService.class::isAssignableFrom)
                 .findFirst()
+                .map(clazz -> (Class<T>) clazz)
                 .orElseThrow(() -> new VertxException("Service class cannot be found"));
     }
 }

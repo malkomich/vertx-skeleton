@@ -32,17 +32,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <resources.directory>src/main/resources</resources.directory>
         <vertx.version>3.5.4</vertx.version>
         <guice.version>4.1.0</guice.version>
-        <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
         <logback.version>1.2.3</logback.version>
         <commons-logging.version>1.1.1</commons-logging.version>
+        <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
         <maven.deploy.plugin.version>2.8.2</maven.deploy.plugin.version>
         <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
         <maven.staging.plugin.version>1.6.7</maven.staging.plugin.version>
         <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
         <maven.javadoc.plugin.version>2.10.4</maven.javadoc.plugin.version>
         <maven.gpg.plugin.version>1.6</maven.gpg.plugin.version>
+        <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -197,6 +199,26 @@
                     <execution>
                         <id>attach-javadoc</id>
                         <goals />
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <configuration>
+                    <failOnViolation>true</failOnViolation>
+                    <configLocation>${resources.directory}/checkstyle.xml</configLocation>
+                    <includeResources>true</includeResources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>checkstyle</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

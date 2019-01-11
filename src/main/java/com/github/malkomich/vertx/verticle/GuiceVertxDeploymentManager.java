@@ -1,7 +1,7 @@
-package com.malkomich.vertx.skeleton.verticle;
+package com.github.malkomich.vertx.verticle;
 
 import com.google.common.base.Preconditions;
-import com.malkomich.vertx.skeleton.rest.HttpVerticle;
+import com.github.malkomich.vertx.rest.HttpVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;

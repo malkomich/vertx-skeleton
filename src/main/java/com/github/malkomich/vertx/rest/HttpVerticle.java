@@ -1,7 +1,7 @@
-package com.malkomich.vertx.skeleton.rest;
+package com.github.malkomich.vertx.rest;
 
+import com.github.malkomich.vertx.VertxService;
 import com.google.common.base.Preconditions;
-import com.malkomich.vertx.skeleton.VertxService;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;

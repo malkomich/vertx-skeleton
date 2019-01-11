@@ -1,4 +1,4 @@
-package com.malkomich.vertx.skeleton.properties;
+package com.github.malkomich.vertx.properties;
 
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;

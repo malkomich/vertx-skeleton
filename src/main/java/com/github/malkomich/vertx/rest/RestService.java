@@ -1,6 +1,6 @@
-package com.malkomich.vertx.skeleton.rest;
+package com.github.malkomich.vertx.rest;
 
-import com.malkomich.vertx.skeleton.VertxService;
+import com.github.malkomich.vertx.VertxService;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.eventbus.ReplyException;
 import io.vertx.ext.web.RoutingContext;

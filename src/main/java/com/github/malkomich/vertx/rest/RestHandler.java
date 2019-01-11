@@ -1,4 +1,4 @@
-package com.malkomich.vertx.skeleton.rest;
+package com.github.malkomich.vertx.rest;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.eventbus.ReplyException;

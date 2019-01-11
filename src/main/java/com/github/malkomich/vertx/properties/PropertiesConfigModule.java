@@ -1,4 +1,4 @@
-package com.malkomich.vertx.skeleton.properties;
+package com.github.malkomich.vertx.properties;
 
 import com.google.inject.AbstractModule;
 import io.vertx.core.Vertx;

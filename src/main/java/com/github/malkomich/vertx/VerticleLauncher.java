@@ -1,12 +1,12 @@
-package com.malkomich.vertx.skeleton;
+package com.github.malkomich.vertx;
 
+import com.github.malkomich.vertx.properties.PropertiesConfigModule;
+import com.github.malkomich.vertx.verticle.GuiceVerticleFactory;
+import com.github.malkomich.vertx.verticle.GuiceVertxDeploymentManager;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.malkomich.vertx.skeleton.properties.PropertiesConfig;
-import com.malkomich.vertx.skeleton.properties.PropertiesConfigModule;
-import com.malkomich.vertx.skeleton.verticle.GuiceVerticleFactory;
-import com.malkomich.vertx.skeleton.verticle.GuiceVertxDeploymentManager;
+import com.github.malkomich.vertx.properties.PropertiesConfig;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
@@ -16,13 +16,14 @@ import io.vertx.core.json.JsonObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.malkomich.vertx.skeleton.rest.HttpVerticle.ADDRESS;
-import static com.malkomich.vertx.skeleton.rest.HttpVerticle.SERVICE_CLASS;
+import static com.github.malkomich.vertx.rest.HttpVerticle.ADDRESS;
+import static com.github.malkomich.vertx.rest.HttpVerticle.SERVICE_CLASS;
 
 public class VerticleLauncher {
 
@@ -129,6 +130,8 @@ public class VerticleLauncher {
         private JsonObject httpServicesConfig;
 
         VerticleLauncherBuilder() {
+            configModuleClasses = new ArrayList<>();
+            verticleClasses = new ArrayList<>();
             httpServicesConfig = new JsonObject();
         }
 
@@ -143,8 +146,8 @@ public class VerticleLauncher {
         }
 
         public VerticleLauncherBuilder withPublicEndpoint(final String path,
-                                                           final String eventBusAddress,
-                                                           final Class<? extends VertxService> service) {
+                                                          final String eventBusAddress,
+                                                          final Class<? extends VertxService> service) {
 
             final JsonObject pathConfig = new JsonObject()
                     .put(ADDRESS, eventBusAddress)
