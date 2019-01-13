@@ -1,15 +1,15 @@
-package com.malkomich.vertx.skeleton.rest;
+package com.github.malkomich.vertx.rest;
 
-import com.malkomich.vertx.skeleton.VertxService;
+import com.github.malkomich.vertx.VertxService;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.eventbus.ReplyException;
 import io.vertx.ext.web.RoutingContext;
 
 public class RestService {
+
     private VertxService service;
 
-    @java.beans.ConstructorProperties({"service"})
-    RestService(VertxService service) {
+    RestService(final VertxService service) {
         this.service = service;
     }
 
@@ -36,7 +36,7 @@ public class RestService {
         RestServiceBuilder() {
         }
 
-        public RestServiceBuilder service(VertxService service) {
+        public RestServiceBuilder service(final VertxService service) {
             this.service = service;
             return this;
         }

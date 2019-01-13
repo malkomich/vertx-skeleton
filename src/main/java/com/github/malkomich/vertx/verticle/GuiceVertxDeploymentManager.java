@@ -1,7 +1,7 @@
-package com.malkomich.vertx.skeleton.verticle;
+package com.github.malkomich.vertx.verticle;
 
 import com.google.common.base.Preconditions;
-import com.malkomich.vertx.skeleton.rest.HttpVerticle;
+import com.github.malkomich.vertx.rest.HttpVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
@@ -23,7 +23,7 @@ public class GuiceVertxDeploymentManager {
                                            final JsonObject httpServicesConfig) {
         final Class clazz = HttpVerticle.class;
         final Future<Void> done = Future.future();
-        config.put(HttpVerticle.SERVICES_CONFIG, httpServicesConfig);
+        config.put(HttpVerticle.HTTP_CONFIG, httpServicesConfig);
         this.vertx.deployVerticle(getFullVerticleName(clazz), deploymentOptions(config, true), result -> {
             if (!result.succeeded()) {
                 log.info("Failed to deploy verticle: " + clazz.getSimpleName() + result.cause());

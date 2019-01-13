@@ -1,4 +1,4 @@
-package com.malkomich.vertx.skeleton.rest;
+package com.github.malkomich.vertx.rest;
 
 import com.google.common.net.HttpHeaders;
 

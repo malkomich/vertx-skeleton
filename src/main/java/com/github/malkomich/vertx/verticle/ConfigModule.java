@@ -1,4 +1,4 @@
-package com.malkomich.vertx.skeleton.verticle;
+package com.github.malkomich.vertx.verticle;
 
 import com.google.inject.AbstractModule;
 import io.vertx.core.Vertx;

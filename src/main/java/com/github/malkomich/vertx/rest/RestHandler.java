@@ -1,4 +1,4 @@
-package com.malkomich.vertx.skeleton.rest;
+package com.github.malkomich.vertx.rest;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.vertx.core.eventbus.ReplyException;
@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 class RestHandler {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(RestHandler.class);
+    private static final String ERROR = "error";
 
     static void successfulResponse(final RoutingContext context,
                                    final JsonObject response) {
@@ -24,7 +25,7 @@ class RestHandler {
 
     static void errorResponse(final ReplyException exception,
                               final RoutingContext context) {
-        JsonObject error = new JsonObject().put("error", exception.getMessage());
+        final JsonObject error = new JsonObject().put(ERROR, exception.getMessage());
         log.error(exception.getMessage());
         Integer status = HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
         if (exception.failureCode() != -1) {
