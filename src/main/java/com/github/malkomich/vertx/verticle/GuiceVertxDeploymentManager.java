@@ -26,11 +26,11 @@ public class GuiceVertxDeploymentManager {
         config.put(HttpVerticle.HTTP_CONFIG, httpServicesConfig);
         this.vertx.deployVerticle(getFullVerticleName(clazz), deploymentOptions(config, true), result -> {
             if (!result.succeeded()) {
-                log.info("Failed to deploy verticle: " + clazz.getSimpleName() + result.cause());
+                log.info("Failed to deploy verticle: {} {{}}", clazz.getSimpleName(), result.cause());
                 done.fail(result.cause());
                 return;
             }
-            log.info("Successfully deployed verticle: " + clazz.getSimpleName());
+            log.info("Successfully deployed verticle: {}", clazz.getSimpleName());
             done.complete();
         });
         return done;

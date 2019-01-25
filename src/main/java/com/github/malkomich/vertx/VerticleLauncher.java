@@ -1,12 +1,14 @@
 package com.github.malkomich.vertx;
 
+import com.github.malkomich.vertx.boot.BootLoader;
+import com.github.malkomich.vertx.boot.InitializationService;
+import com.github.malkomich.vertx.properties.PropertiesConfig;
 import com.github.malkomich.vertx.properties.PropertiesConfigModule;
 import com.github.malkomich.vertx.verticle.GuiceVerticleFactory;
 import com.github.malkomich.vertx.verticle.GuiceVertxDeploymentManager;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.github.malkomich.vertx.properties.PropertiesConfig;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
@@ -28,31 +30,29 @@ import static com.github.malkomich.vertx.rest.HttpVerticle.SERVICE_CLASS;
 public class VerticleLauncher {
 
     private static final long BLOCK_THREAD_CHECK_INTERVAL = 60000L;
-    private static final String DEFAULT_CONFIG_FILE_NAME = "config.json";
 
     private final List<Class> configModuleClasses;
     private final List<Class> verticleClasses;
     private final JsonObject httpServicesConfig;
+    private final InitializationService initializationService;
 
     private Vertx vertx;
 
     VerticleLauncher(final List<Class> configModuleClasses,
                      final List<Class> verticleClasses,
-                     final JsonObject httpServicesConfig) {
+                     final JsonObject httpServicesConfig,
+                     final InitializationService initializationService) {
         this.configModuleClasses = configModuleClasses;
         this.verticleClasses = verticleClasses;
         this.httpServicesConfig = httpServicesConfig;
+        this.initializationService = initializationService;
     }
 
     public static VerticleLauncher.VerticleLauncherBuilder builder() {
         return new VerticleLauncherBuilder();
     }
 
-    public void launch() {
-        launch(DEFAULT_CONFIG_FILE_NAME);
-    }
-
-    public void launch(final String configFileName) {
+    private void launch(final String configFileName) {
         final VertxOptions options = new VertxOptions()
                 .setBlockedThreadCheckInterval(BLOCK_THREAD_CHECK_INTERVAL);
         vertx = Vertx.vertx(options);
@@ -71,7 +71,7 @@ public class VerticleLauncher {
         final GuiceVerticleFactory guiceVerticleFactory = new GuiceVerticleFactory(injector);
         vertx.registerVerticleFactory(guiceVerticleFactory);
 
-        compositeFuture(asyncResult.result(), done);
+        compositeFuture(asyncResult.result(), injector, done);
     }
 
     private Injector dependencyModulesInjector(final JsonObject config) {
@@ -101,13 +101,15 @@ public class VerticleLauncher {
             new Class[]{Vertx.class, JsonObject.class});
     }
 
-    private void compositeFuture(final JsonObject config, final Future<Void> done) {
+    private void compositeFuture(final JsonObject config,
+                                 final Injector injector,
+                                 final Future<Void> future) {
         generateCompositeFuture(config).setHandler(asyncResult -> {
             if (!asyncResult.succeeded()) {
-                done.fail(asyncResult.cause());
+                future.fail(asyncResult.cause());
                 return;
             }
-            done.complete();
+            initializationService.execute(injector, vertx, future);
         });
     }
 
@@ -125,14 +127,21 @@ public class VerticleLauncher {
     }
 
     public static class VerticleLauncherBuilder {
+
+        private static final String DEFAULT_CONFIG_FILE_NAME = "config.json";
+
         private List<Class> configModuleClasses;
         private List<Class> verticleClasses;
         private JsonObject httpServicesConfig;
+        private InitializationService initializationService;
+        private String configFileName;
 
         VerticleLauncherBuilder() {
             configModuleClasses = new ArrayList<>();
             verticleClasses = new ArrayList<>();
             httpServicesConfig = new JsonObject();
+            initializationService = InitializationService.getInstance();
+            configFileName = DEFAULT_CONFIG_FILE_NAME;
         }
 
         public VerticleLauncher.VerticleLauncherBuilder configModules(final Class ...configModuleClasses) {
@@ -156,9 +165,19 @@ public class VerticleLauncher {
             return this;
         }
 
+        public VerticleLauncherBuilder bootLoader(final BootLoader bootLoader) {
+            initializationService.setBootLoader(bootLoader);
+            return this;
+        }
+
+        public VerticleLauncherBuilder configFileName(final String configFileName) {
+            this.configFileName = configFileName;
+            return this;
+        }
+
         public void execute() {
-            new VerticleLauncher(configModuleClasses, verticleClasses, httpServicesConfig)
-                    .launch();
+            new VerticleLauncher(configModuleClasses, verticleClasses, httpServicesConfig, initializationService)
+                    .launch(configFileName);
         }
 
         public String toString() {
