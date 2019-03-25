@@ -19,12 +19,13 @@ public class GuiceVertxDeploymentManager {
         this.vertx = Preconditions.checkNotNull(vertx);
     }
 
+    @Deprecated
     public Future<Void> deployHttpVerticle(final JsonObject config,
                                            final JsonObject httpServicesConfig) {
         final Class clazz = HttpVerticle.class;
         final Future<Void> done = Future.future();
         config.put(HttpVerticle.HTTP_CONFIG, httpServicesConfig);
-        this.vertx.deployVerticle(getFullVerticleName(clazz), deploymentOptions(config, true), result -> {
+        vertx.deployVerticle(getFullVerticleName(clazz), deploymentOptions(config, true), result -> {
             if (!result.succeeded()) {
                 log.info("Failed to deploy verticle: {} {{}}", clazz.getSimpleName(), result.cause());
                 done.fail(result.cause());
@@ -36,10 +37,10 @@ public class GuiceVertxDeploymentManager {
         return done;
     }
 
-    public Future<Void> deployWorkerVerticle(final Class clazz, final JsonObject config) {
+    public Future<Void> deployVerticle(final Class clazz, final JsonObject config) {
         final Future<Void> done = Future.future();
         Preconditions.checkNotNull(clazz);
-        this.vertx.deployVerticle(getFullVerticleName(clazz), deploymentOptions(config, false), result -> {
+        vertx.deployVerticle(getFullVerticleName(clazz), deploymentOptions(config, false), result -> {
             if (!result.succeeded()) {
                 log.info("Failed to deploy verticle: " + clazz + result.cause());
                 done.fail(result.cause());

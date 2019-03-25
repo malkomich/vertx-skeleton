@@ -4,6 +4,8 @@ import com.github.malkomich.vertx.boot.BootLoader;
 import com.github.malkomich.vertx.boot.InitializationService;
 import com.github.malkomich.vertx.properties.PropertiesConfig;
 import com.github.malkomich.vertx.properties.PropertiesConfigModule;
+import com.github.malkomich.vertx.rest.api.ApiFactory;
+import com.github.malkomich.vertx.rest.api.RouterFactory;
 import com.github.malkomich.vertx.verticle.GuiceVerticleFactory;
 import com.github.malkomich.vertx.verticle.GuiceVertxDeploymentManager;
 import com.google.inject.AbstractModule;
@@ -33,11 +35,14 @@ public class VerticleLauncher {
 
     private final List<Class> configModuleClasses;
     private final List<Class> verticleClasses;
+    @Deprecated
     private final JsonObject httpServicesConfig;
     private final InitializationService initializationService;
+    private final ApiFactory apiFactory;
 
     private Vertx vertx;
 
+    @Deprecated
     VerticleLauncher(final List<Class> configModuleClasses,
                      final List<Class> verticleClasses,
                      final JsonObject httpServicesConfig,
@@ -46,6 +51,18 @@ public class VerticleLauncher {
         this.verticleClasses = verticleClasses;
         this.httpServicesConfig = httpServicesConfig;
         this.initializationService = initializationService;
+        this.apiFactory = null;
+    }
+
+    VerticleLauncher(final List<Class> configModuleClasses,
+                     final List<Class> verticleClasses,
+                     final InitializationService initializationService,
+                     final ApiFactory apiFactory) {
+        this.configModuleClasses = configModuleClasses;
+        this.verticleClasses = verticleClasses;
+        httpServicesConfig = new JsonObject();
+        this.initializationService = initializationService;
+        this.apiFactory = apiFactory;
     }
 
     public static VerticleLauncher.VerticleLauncherBuilder builder() {
@@ -117,13 +134,28 @@ public class VerticleLauncher {
         final GuiceVertxDeploymentManager deploymentManager = new GuiceVertxDeploymentManager(vertx);
 
         final List<Future> verticleFutures = verticleClasses.stream()
-                .map(clazz -> deploymentManager.deployWorkerVerticle(clazz, config))
+                .map(clazz -> deploymentManager.deployVerticle(clazz, config))
                 .collect(Collectors.toList());
-        if (!httpServicesConfig.isEmpty()) {
-            final Future<Void> httpVerticleFuture = deploymentManager.deployHttpVerticle(config, httpServicesConfig);
-            verticleFutures.add(httpVerticleFuture);
+        final Future<Void> webApiFuture = webApiFuture(config, deploymentManager);
+        if (webApiFuture != null) {
+            verticleFutures.add(webApiFuture);
         }
         return CompositeFuture.all(verticleFutures);
+    }
+
+    private Future<Void> webApiFuture(final JsonObject config,
+                                         final GuiceVertxDeploymentManager deploymentManager) {
+        if (apiFactory != null) {
+            return RouterFactory.builder()
+                    .vertx(vertx)
+                    .config(config)
+                    .apiFactory(apiFactory)
+                    .execute();
+        }
+        if (!httpServicesConfig.isEmpty()) {
+            return deploymentManager.deployHttpVerticle(config, httpServicesConfig);
+        }
+        return null;
     }
 
     public static class VerticleLauncherBuilder {
@@ -135,6 +167,7 @@ public class VerticleLauncher {
         private JsonObject httpServicesConfig;
         private InitializationService initializationService;
         private String configFileName;
+        private ApiFactory apiFactory;
 
         VerticleLauncherBuilder() {
             configModuleClasses = new ArrayList<>();
@@ -154,6 +187,7 @@ public class VerticleLauncher {
             return this;
         }
 
+        @Deprecated
         public VerticleLauncherBuilder withPublicEndpoint(final String path,
                                                           final String eventBusAddress,
                                                           final Class<? extends VertxService> service) {
@@ -162,6 +196,11 @@ public class VerticleLauncher {
                     .put(ADDRESS, eventBusAddress)
                     .put(SERVICE_CLASS, service.getCanonicalName());
             httpServicesConfig.put(path, pathConfig);
+            return this;
+        }
+
+        public VerticleLauncherBuilder apiFactory(final ApiFactory apiFactory) {
+            this.apiFactory = apiFactory;
             return this;
         }
 
@@ -175,8 +214,14 @@ public class VerticleLauncher {
             return this;
         }
 
-        public void execute() {
+        @Deprecated
+        public void execute_old() {
             new VerticleLauncher(configModuleClasses, verticleClasses, httpServicesConfig, initializationService)
+                    .launch(configFileName);
+        }
+
+        public void execute() {
+            new VerticleLauncher(configModuleClasses, verticleClasses, initializationService, apiFactory)
                     .launch(configFileName);
         }
 

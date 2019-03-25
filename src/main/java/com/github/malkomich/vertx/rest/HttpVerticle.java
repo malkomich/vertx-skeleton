@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 
 import java.util.Map;
 
+@Deprecated
 public class HttpVerticle extends AbstractVerticle {
 
     public static final String HTTP_CONFIG = "httpConfig";

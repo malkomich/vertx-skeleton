@@ -36,10 +36,14 @@
         <resources.directory>src/main/resources</resources.directory>
 
         <!-- Dependencies versions -->
-        <vertx.version>3.5.4</vertx.version>
+        <vertx.version>3.6.2</vertx.version>
         <guice.version>4.1.0</guice.version>
         <logback.version>1.2.3</logback.version>
         <commons-logging.version>1.1.1</commons-logging.version>
+
+        <junit.juniper.version>5.4.0</junit.juniper.version>
+        <mockito.version>2.24.0</mockito.version>
+        <jmockit.version>1.24</jmockit.version>
 
         <!-- Plugins versions -->
         <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
@@ -63,6 +67,11 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-web-api-contract</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
@@ -116,6 +125,34 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.juniper.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-junit5</artifactId>
+            <version>${vertx.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jmockit</groupId>
+            <artifactId>jmockit</artifactId>
+            <version>${jmockit.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
