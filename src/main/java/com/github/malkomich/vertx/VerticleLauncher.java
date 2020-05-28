@@ -30,6 +30,9 @@ public class VerticleLauncher {
 
     private final List<Class<?>> configModuleClasses;
     private final List<Class<?>> verticleClasses;
+    /**
+     * @deprecated (use ApiFactory for REST services)
+     */
     @Deprecated
     private final JsonObject httpServicesConfig;
     private final InitializationService initializationService;
@@ -37,6 +40,9 @@ public class VerticleLauncher {
 
     private Vertx vertx;
 
+    /**
+     * @deprecated (use constructor with ApiFactory)
+     */
     @Deprecated
     VerticleLauncher(final List<Class<?>> configModuleClasses,
                      final List<Class<?>> verticleClasses,
@@ -186,6 +192,9 @@ public class VerticleLauncher {
             return this;
         }
 
+        /**
+         * @deprecated (use ApiFactory for REST services)
+         */
         @Deprecated
         public VerticleLauncherBuilder withPublicEndpoint(final String path,
                                                           final String eventBusAddress,
@@ -213,6 +222,9 @@ public class VerticleLauncher {
             return this;
         }
 
+        /**
+         * @deprecated (use constructor with ApiFactory)
+         */
         @Deprecated
         public void execute_old() {
             new VerticleLauncher(configModuleClasses, verticleClasses, httpServicesConfig, initializationService)

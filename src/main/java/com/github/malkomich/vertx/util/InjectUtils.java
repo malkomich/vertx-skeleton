@@ -6,6 +6,8 @@ import io.vertx.serviceproxy.ServiceProxyBuilder;
 
 public class InjectUtils {
 
+    private InjectUtils() {}
+
     public static <T> T getInstance(final Injector injector, final Class<T> clazz) {
         return injector.getInstance(clazz);
     }

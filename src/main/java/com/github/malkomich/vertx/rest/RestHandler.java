@@ -13,6 +13,8 @@ class RestHandler {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(RestHandler.class);
     private static final String ERROR = "error";
 
+    private RestHandler() {}
+
     static void successfulResponse(final RoutingContext context,
                                    final JsonObject response) {
         final String message = (response != null) ? response.encode() : null;
