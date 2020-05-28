@@ -6,7 +6,6 @@ import com.github.malkomich.vertx.properties.PropertiesConfig;
 import com.github.malkomich.vertx.properties.PropertiesConfigModule;
 import com.github.malkomich.vertx.rest.api.ApiFactory;
 import com.github.malkomich.vertx.rest.api.RouterFactory;
-import com.github.malkomich.vertx.verticle.ConfigModule;
 import com.github.malkomich.vertx.verticle.GuiceVerticleFactory;
 import com.github.malkomich.vertx.verticle.GuiceVertxDeploymentManager;
 import com.google.inject.AbstractModule;
