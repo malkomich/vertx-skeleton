@@ -15,9 +15,9 @@ install: skip
 
 script:
   - >
-    mvn clean
-    org.jacoco:jacoco-maven-plugin:prepare-agent
-    install
+    mvn -Pcoverage
+    clean
+    verify
     sonar:sonar
     -Dsonar.projectKey=com.github.malkomich:vertx-skeleton
 
