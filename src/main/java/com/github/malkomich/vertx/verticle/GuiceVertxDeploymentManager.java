@@ -1,9 +1,10 @@
 package com.github.malkomich.vertx.verticle;
 
-import com.google.common.base.Preconditions;
 import com.github.malkomich.vertx.rest.HttpVerticle;
+import com.google.common.base.Preconditions;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
+import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ public class GuiceVertxDeploymentManager {
     @Deprecated
     public Future<Void> deployHttpVerticle(final JsonObject config,
                                            final JsonObject httpServicesConfig) {
-        final Class clazz = HttpVerticle.class;
+        final Class<? extends Verticle> clazz = HttpVerticle.class;
         final Future<Void> done = Future.future();
         config.put(HttpVerticle.HTTP_CONFIG, httpServicesConfig);
         vertx.deployVerticle(getFullVerticleName(clazz), deploymentOptions(config, true), result -> {
@@ -37,7 +38,8 @@ public class GuiceVertxDeploymentManager {
         return done;
     }
 
-    public Future<Void> deployVerticle(final Class clazz, final JsonObject config) {
+    public Future<Void> deployVerticle(final Class<?> clazz,
+                                       final JsonObject config) {
         final Future<Void> done = Future.future();
         Preconditions.checkNotNull(clazz);
         vertx.deployVerticle(getFullVerticleName(clazz), deploymentOptions(config, false), result -> {
@@ -52,7 +54,7 @@ public class GuiceVertxDeploymentManager {
         return done;
     }
 
-    private static String getFullVerticleName(final Class verticleClazz) {
+    private static String getFullVerticleName(final Class<?> verticleClazz) {
         return GuiceVerticleFactory.GUICE_PREFIX
                 .concat(":")
                 .concat(verticleClazz.getCanonicalName());

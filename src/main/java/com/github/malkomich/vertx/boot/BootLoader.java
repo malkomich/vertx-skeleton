@@ -9,5 +9,5 @@ public interface BootLoader {
 
     void initialize(final Injector injector,
                     final Vertx vertx,
-                    final Handler<AsyncResult> handler);
+                    final Handler<AsyncResult<?>> handler);
 }

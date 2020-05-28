@@ -7,7 +7,7 @@ import io.vertx.ext.web.RoutingContext;
 
 public class RestService {
 
-    private VertxService service;
+    private final VertxService service;
 
     RestService(final VertxService service) {
         this.service = service;
