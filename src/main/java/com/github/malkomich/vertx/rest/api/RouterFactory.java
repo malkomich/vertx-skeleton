@@ -137,7 +137,7 @@ public class RouterFactory {
         }
 
         private Handler<RoutingContext> defaultFailureHandler() {
-            return (routingContext) -> routingContext.fail(routingContext.failure());
+            return routingContext -> routingContext.fail(routingContext.failure());
         }
 
         private VertxService getService(final Class<? extends VertxService> clazz, final String address) {

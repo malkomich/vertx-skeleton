@@ -6,13 +6,13 @@ import io.vertx.core.Vertx;
 
 public class InitializationService {
 
-    private static InitializationService INSTANCE;
+    private static InitializationService initializationService;
 
     public static InitializationService getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new InitializationService(defaultBootLoader());
+        if (initializationService == null) {
+            initializationService = new InitializationService(defaultBootLoader());
         }
-        return INSTANCE;
+        return initializationService;
     }
 
     private static BootLoader defaultBootLoader() {

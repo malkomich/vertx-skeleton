@@ -20,6 +20,9 @@ public class GuiceVertxDeploymentManager {
         this.vertx = Preconditions.checkNotNull(vertx);
     }
 
+    /**
+     * @deprecated (use ApiFactory for REST services)
+     */
     @Deprecated
     public Future<Void> deployHttpVerticle(final JsonObject config,
                                            final JsonObject httpServicesConfig) {
@@ -28,7 +31,7 @@ public class GuiceVertxDeploymentManager {
         config.put(HttpVerticle.HTTP_CONFIG, httpServicesConfig);
         vertx.deployVerticle(getFullVerticleName(clazz), deploymentOptions(config, true), result -> {
             if (!result.succeeded()) {
-                log.info("Failed to deploy verticle: {} ({})", clazz.getSimpleName(), result.cause());
+                log.info("Failed to deploy verticle: {}", clazz.getSimpleName(), result.cause());
                 done.fail(result.cause());
                 return;
             }
@@ -44,11 +47,11 @@ public class GuiceVertxDeploymentManager {
         Preconditions.checkNotNull(clazz);
         vertx.deployVerticle(getFullVerticleName(clazz), deploymentOptions(config, false), result -> {
             if (!result.succeeded()) {
-                log.info("Failed to deploy verticle: " + clazz + result.cause());
+                log.info("Failed to deploy verticle: {}", clazz, result.cause());
                 done.fail(result.cause());
                 return;
             }
-            log.info("Successfully deployed verticle: " + clazz);
+            log.info("Successfully deployed verticle: {}", clazz);
             done.complete();
         });
         return done;
