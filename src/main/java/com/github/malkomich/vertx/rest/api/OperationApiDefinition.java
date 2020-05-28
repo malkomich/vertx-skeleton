@@ -4,9 +4,9 @@ import com.github.malkomich.vertx.VertxService;
 
 public class OperationApiDefinition {
 
-    private String operationId;
-    private String verticleAddress;
-    private Class<? extends VertxService> serviceClass;
+    private final String operationId;
+    private final String verticleAddress;
+    private final Class<? extends VertxService> serviceClass;
 
     private OperationApiDefinition(final String operationId,
                            final String verticleAddress,

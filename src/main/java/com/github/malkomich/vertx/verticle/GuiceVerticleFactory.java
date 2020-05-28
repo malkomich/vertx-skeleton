@@ -25,7 +25,7 @@ public class GuiceVerticleFactory implements VerticleFactory {
     public Verticle createVerticle(final String verticleName, final ClassLoader classLoader) throws Exception {
         final String verticleBaseName = VerticleFactory.removePrefix(verticleName);
 
-        final Class clazz = classLoader.loadClass(verticleBaseName);
+        final Class<?> clazz = classLoader.loadClass(verticleBaseName);
 
         return (Verticle) injector.getInstance(clazz);
     }

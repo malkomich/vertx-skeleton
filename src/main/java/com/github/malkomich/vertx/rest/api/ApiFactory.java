@@ -7,8 +7,8 @@ import java.util.List;
 
 public class ApiFactory {
 
-    private String yamlPath;
-    private List<OperationApiDefinition> operationApiDefinitions;
+    private final String yamlPath;
+    private final List<OperationApiDefinition> operationApiDefinitions;
 
     private ApiFactory(final String yamlPath, final List<OperationApiDefinition> operationApiDefinitions) {
         this.yamlPath = yamlPath;
@@ -28,8 +28,8 @@ public class ApiFactory {
     }
 
     public static class ApiFactoryBuilder {
+        private final List<OperationApiDefinition> operations;
         private String yamlPath;
-        private List<OperationApiDefinition> operations;
 
         ApiFactoryBuilder() {
             operations = new ArrayList<>();

@@ -22,11 +22,11 @@ public class RouterFactory {
     private static final String VERTX_PORT = "port";
     private static final int DEFAULT_VERTX_PORT = 8080;
 
-    private Vertx vertx;
-    private JsonObject config;
-    private String yamlPath;
-    private Map<String, Handler<RoutingContext>> operationSuccessHandlers;
-    private Map<String, Handler<RoutingContext>> operationFailHandlers;
+    private final Vertx vertx;
+    private final JsonObject config;
+    private final String yamlPath;
+    private final Map<String, Handler<RoutingContext>> operationSuccessHandlers;
+    private final Map<String, Handler<RoutingContext>> operationFailHandlers;
 
     @SuppressWarnings("checkstyle:parameternumber")
     private RouterFactory(final Vertx vertx,
@@ -84,11 +84,11 @@ public class RouterFactory {
     }
 
     public static class RouterFactoryBuilder {
+        private final Map<String, Handler<RoutingContext>> operationSuccessHandlers;
+        private final Map<String, Handler<RoutingContext>> operationFailHandlers;
         private Vertx vertx;
         private JsonObject config;
         private String yamlPath;
-        private Map<String, Handler<RoutingContext>> operationSuccessHandlers;
-        private Map<String, Handler<RoutingContext>> operationFailHandlers;
 
         private RouterFactoryBuilder() {
             operationSuccessHandlers = new HashMap<>();

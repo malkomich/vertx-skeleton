@@ -27,14 +27,14 @@ class RestHandler {
                               final RoutingContext context) {
         final JsonObject error = new JsonObject().put(ERROR, exception.getMessage());
         log.error(exception.getMessage());
-        Integer status = HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
+        int status = HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
         if (exception.failureCode() != -1) {
             status = exception.failureCode();
         }
         resolveContext(context, status, error.toString());
     }
 
-    static void resolveContext(final RoutingContext context, final Integer status, final String message) {
+    static void resolveContext(final RoutingContext context, final int status, final String message) {
         final HttpServerResponse httpServerResponse = context.response()
                 .setStatusCode(status)
                 .putHeader(Headers.CONTENT_TYPE, Headers.FORMAT)
