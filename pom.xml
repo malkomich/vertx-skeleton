@@ -4,7 +4,7 @@
 
     <groupId>com.github.malkomich</groupId>
     <artifactId>vertx-skeleton</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Vert.x Skeleton</name>
@@ -44,6 +44,7 @@
         <junit.juniper.version>5.4.0</junit.juniper.version>
         <mockito.version>2.24.0</mockito.version>
         <jmockit.version>1.24</jmockit.version>
+        <jacoco.plugin.version>0.8.5</jacoco.plugin.version>
 
         <!-- Plugins versions -->
         <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>

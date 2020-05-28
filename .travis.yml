@@ -1,20 +1,38 @@
 language: java
 
-branches:
-  only:
-    - master
+# Build only PRs and master branch
+if: type = pull_request OR branch = master
+
+# required for SonarCloud
+git:
+  depth: false
 
 jdk:
   - openjdk11
   - oraclejdk11
 
-notifications:
-  email: true
+install: skip
+
+script:
+  - >
+    mvn clean
+    org.jacoco:jacoco-maven-plugin:prepare-agent
+    install
+    sonar:sonar
+    -Dsonar.projectKey=com.github.malkomich:vertx-skeleton
 
 addons:
   sonarcloud:
-    organization: "malkomich-github"
+    organization: malkomich-github
     token: ${SONAR_TOKEN}
 
-script:
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
+before_cache:
+  - rm -fr $HOME/.m2/repository/com/github/malkomich
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
+
+notifications:
+  email: false

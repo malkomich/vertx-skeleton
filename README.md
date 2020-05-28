@@ -1,6 +1,7 @@
 # Vertx Skeleton
 
 [![Build Status](https://travis-ci.org/malkomich/vertx-skeleton.svg?branch=master)](https://travis-ci.org/malkomich/vertx-skeleton)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.github.malkomich%3Avertx-skeleton&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.github.malkomich%3Avertx-skeleton)
 
 
 ## Overview
@@ -72,7 +73,7 @@ public interface CustomService extends VertxService {
 public class CustomServiceImpl implements CustomService {
 
     private ThirdPartyService thirdPartyService;
-    
+
     public CustomServiceImpl(final ThirdPartyService thirdPartyService) {
         this.thirdPartyService = thirdPartyService;
     }
