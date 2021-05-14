@@ -31,7 +31,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <resources.directory>src/main/resources</resources.directory>
         <vertx.version>3.5.4</vertx.version>
         <guice.version>4.1.0</guice.version>
