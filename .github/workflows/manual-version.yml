@@ -1,0 +1,39 @@
+name: Manual Versioning
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The version you want to be released'
+        required: true
+
+jobs:
+  manual_versioning:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Java for publishing to Maven Central Repository
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Configure git
+        run: |
+          git config --global committer.email "noreply@github.com"
+          git config --global committer.name "GitHub"
+          git config --global author.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --global author.name "${GITHUB_ACTOR}"
+
+      - name: Update version & commit it
+        run: |
+          VERSION=${{ github.event.inputs.version }}
+          echo "Version updated to ${VERSION}"
+          mvn versions:set -DnewVersion=$VERSION --no-transfer-progress
+          git add .
+          git commit -m "[github-actions] manual update to version ${VERSION}"
+          git pull origin ${{ github.event.ref }}
+          git push origin ${{ github.event.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
