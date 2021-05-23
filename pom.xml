@@ -29,22 +29,25 @@
     </licenses>
 
     <properties>
+        <!-- Common properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
         <resources.directory>src/main/resources</resources.directory>
+
+        <!-- Dependencies versions -->
         <vertx.version>3.5.4</vertx.version>
         <guice.version>4.1.0</guice.version>
         <logback.version>1.2.3</logback.version>
         <commons-logging.version>1.1.1</commons-logging.version>
+
+        <!-- Plugins versions -->
         <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
-        <maven.deploy.plugin.version>2.8.2</maven.deploy.plugin.version>
-        <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
-        <maven.staging.plugin.version>1.6.7</maven.staging.plugin.version>
+        <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
         <maven.source.plugin.version>3.0.1</maven.source.plugin.version>
         <maven.javadoc.plugin.version>2.10.4</maven.javadoc.plugin.version>
         <maven.gpg.plugin.version>1.6</maven.gpg.plugin.version>
-        <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
+        <maven.staging.plugin.version>1.6.7</maven.staging.plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -130,48 +133,23 @@
             </plugin>
 
             <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>${maven.deploy.plugin.version}</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <configuration>
+                    <failOnViolation>true</failOnViolation>
+                    <configLocation>${resources.directory}/checkstyle.xml</configLocation>
+                    <includeResources>true</includeResources>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>default-deploy</id>
-                        <phase>deploy</phase>
+                        <id>checkstyle</id>
+                        <phase>validate</phase>
                         <goals>
-                            <goal>deploy</goal>
+                            <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>${maven.release.plugin.version}</version>
-                <configuration>
-                    <localCheckout>true</localCheckout>
-                    <pushChanges>false</pushChanges>
-                    <mavenExecutorId>forked-path</mavenExecutorId>
-                    <arguments>-Dgpg.passphrase=${gpg.passphrase}</arguments>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.scm</groupId>
-                        <artifactId>maven-scm-provider-gitexe</artifactId>
-                        <version>1.9.5</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>${maven.staging.plugin.version}</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                </configuration>
             </plugin>
 
             <plugin>
@@ -204,23 +182,15 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven-checkstyle-plugin.version}</version>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>${maven.staging.plugin.version}</version>
+                <extensions>true</extensions>
                 <configuration>
-                    <failOnViolation>true</failOnViolation>
-                    <configLocation>${resources.directory}/checkstyle.xml</configLocation>
-                    <includeResources>true</includeResources>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>checkstyle</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -228,29 +198,29 @@
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
+            <name>Maven Repository Snapshots</name>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/
-            </url>
+            <name>Maven Repository Releases</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:git://github.com/malkomich/vertx-skeleton.git</connection>
-        <developerConnection>scm:git:git@github.com:malkomich/vertx-skeleton.git</developerConnection>
-        <url>https://github.com/malkomich/vertx-skeleton</url>
+        <connection>scm:git:git://github.com/malkomich/${project.artifactId}.git</connection>
+        <developerConnection>scm:git:git@github.com:malkomich/${project.artifactId}.git</developerConnection>
+        <url>https://github.com/malkomich/${project.artifactId}</url>
         <tag>HEAD</tag>
     </scm>
 
     <profiles>
-        <!-- GPG Signature on release -->
         <profile>
             <id>release-sign-artifacts</id>
             <activation>
                 <property>
-                    <name>performRelease</name>
+                    <name>env.DEPLOY</name>
                     <value>true</value>
                 </property>
             </activation>
