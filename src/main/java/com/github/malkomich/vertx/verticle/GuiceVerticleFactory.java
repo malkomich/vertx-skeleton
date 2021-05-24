@@ -8,7 +8,8 @@ import io.vertx.core.spi.VerticleFactory;
 
 public class GuiceVerticleFactory implements VerticleFactory {
 
-    public static final String GUICE_PREFIX = "java-guice";
+    static final String GUICE_PREFIX = "java-guice";
+
     private final Injector injector;
 
     public GuiceVerticleFactory(final Injector injector) {
@@ -24,8 +25,8 @@ public class GuiceVerticleFactory implements VerticleFactory {
     public Verticle createVerticle(final String verticleName, final ClassLoader classLoader) throws Exception {
         final String verticleBaseName = VerticleFactory.removePrefix(verticleName);
 
-        final Class clazz = classLoader.loadClass(verticleBaseName);
+        final Class<?> clazz = classLoader.loadClass(verticleBaseName);
 
-        return (Verticle) this.injector.getInstance(clazz);
+        return (Verticle) injector.getInstance(clazz);
     }
 }

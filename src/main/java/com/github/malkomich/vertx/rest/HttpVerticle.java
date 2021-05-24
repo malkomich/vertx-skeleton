@@ -15,6 +15,10 @@ import org.slf4j.Logger;
 
 import java.util.Map;
 
+/**
+ * @deprecated (use ApiFactory for REST services)
+ */
+@Deprecated
 public class HttpVerticle extends AbstractVerticle {
 
     public static final String HTTP_CONFIG = "httpConfig";
@@ -52,9 +56,9 @@ public class HttpVerticle extends AbstractVerticle {
                 .build(serviceClass);
     }
 
-    private Class<? extends VertxService> getServiceClass(final JsonObject serviceConfig) {
+    private <T extends VertxService> Class<T> getServiceClass(final JsonObject serviceConfig) {
         try {
-            final Class clazz = Class.forName(serviceConfig.getString(SERVICE_CLASS));
+            final Class<T> clazz = (Class<T>) Class.forName(serviceConfig.getString(SERVICE_CLASS));
             Preconditions.checkArgument(VertxService.class.isAssignableFrom(clazz));
             return clazz;
         } catch (final ClassNotFoundException error) {

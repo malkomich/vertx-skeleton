@@ -20,7 +20,7 @@ public class PropertiesConfig {
     private static final String TYPE_FILE = "file";
     private static final String PATH = "path";
 
-    private ConfigRetriever configRetriever;
+    private final ConfigRetriever configRetriever;
 
     PropertiesConfig(final Vertx vertx, final String configFileName) {
         final ConfigRetrieverOptions configRetrieverOptions = new ConfigRetrieverOptions().setScanPeriod(SCAN_PERIOD);

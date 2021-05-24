@@ -1,9 +1,10 @@
 package com.github.malkomich.vertx.verticle;
 
-import com.google.common.base.Preconditions;
 import com.github.malkomich.vertx.rest.HttpVerticle;
+import com.google.common.base.Preconditions;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Future;
+import io.vertx.core.Verticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import org.slf4j.Logger;
@@ -19,14 +20,18 @@ public class GuiceVertxDeploymentManager {
         this.vertx = Preconditions.checkNotNull(vertx);
     }
 
+    /**
+     * @deprecated (use ApiFactory for REST services)
+     */
+    @Deprecated
     public Future<Void> deployHttpVerticle(final JsonObject config,
                                            final JsonObject httpServicesConfig) {
-        final Class clazz = HttpVerticle.class;
+        final Class<? extends Verticle> clazz = HttpVerticle.class;
         final Future<Void> done = Future.future();
         config.put(HttpVerticle.HTTP_CONFIG, httpServicesConfig);
-        this.vertx.deployVerticle(getFullVerticleName(clazz), deploymentOptions(config, true), result -> {
+        vertx.deployVerticle(getFullVerticleName(clazz), deploymentOptions(config, true), result -> {
             if (!result.succeeded()) {
-                log.info("Failed to deploy verticle: {} {{}}", clazz.getSimpleName(), result.cause());
+                log.info("Failed to deploy verticle: {}", clazz.getSimpleName(), result.cause());
                 done.fail(result.cause());
                 return;
             }
@@ -36,22 +41,23 @@ public class GuiceVertxDeploymentManager {
         return done;
     }
 
-    public Future<Void> deployWorkerVerticle(final Class clazz, final JsonObject config) {
+    public Future<Void> deployVerticle(final Class<?> clazz,
+                                       final JsonObject config) {
         final Future<Void> done = Future.future();
         Preconditions.checkNotNull(clazz);
-        this.vertx.deployVerticle(getFullVerticleName(clazz), deploymentOptions(config, false), result -> {
+        vertx.deployVerticle(getFullVerticleName(clazz), deploymentOptions(config, false), result -> {
             if (!result.succeeded()) {
-                log.info("Failed to deploy verticle: " + clazz + result.cause());
+                log.info("Failed to deploy verticle: {}", clazz, result.cause());
                 done.fail(result.cause());
                 return;
             }
-            log.info("Successfully deployed verticle: " + clazz);
+            log.info("Successfully deployed verticle: {}", clazz);
             done.complete();
         });
         return done;
     }
 
-    private static String getFullVerticleName(final Class verticleClazz) {
+    private static String getFullVerticleName(final Class<?> verticleClazz) {
         return GuiceVerticleFactory.GUICE_PREFIX
                 .concat(":")
                 .concat(verticleClazz.getCanonicalName());
