@@ -1,17 +1,5 @@
-language: java
-
-# Build only PRs and master branch
-if: type = pull_request OR branch = master
-
-# required for SonarCloud
-git:
-  depth: false
-
-jdk:
-  - openjdk11
-  - oraclejdk11
-
-install: skip
+sudo: false
+install: true
 
 script:
   - >
