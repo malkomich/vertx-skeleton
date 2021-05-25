@@ -22,21 +22,19 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 class GuiceVerticleFactoryTest {
 
-    private static final String VERTICLE_NAME = "verticleName";
+    private static final String VERTICLE_NAME = CustomVerticle.class.getName();
 
-    @Mock
-    private Injector injector;
-    @Mock
+    @Mock private Injector injector;
+    @Mock private CustomVerticle customVerticle;
+
     private ClassLoader classLoader;
-    @Mock
-    private CustomVerticle customVerticle;
-
     private GuiceVerticleFactory verticleFactory;
 
     @BeforeEach
     void setUp() {
         initMocks(this);
         verticleFactory = new GuiceVerticleFactory(injector);
+        classLoader = ClassLoader.getSystemClassLoader();
     }
 
     @Test
@@ -56,30 +54,14 @@ class GuiceVerticleFactoryTest {
     }
 
     @Test
-    void createVerticleInvalidClass() throws Exception {
-        Deencapsulation.invoke(VerticleFactory.class, "removePrefix", VERTICLE_NAME);
-        when(classLoader.loadClass(VERTICLE_NAME)).then(invocationOnMock -> InvalidClass.class);
-        when(injector.getInstance(InvalidClass.class)).thenReturn(new InvalidClass());
-
-        final Executable errorExecutable = () -> verticleFactory.createVerticle(VERTICLE_NAME, classLoader);
-
-        assertThrows(ClassCastException.class, errorExecutable);
-    }
-
-    @Test
     void createVerticleSuccessful() throws Exception {
         Deencapsulation.invoke(VerticleFactory.class, "removePrefix", VERTICLE_NAME);
-        when(classLoader.loadClass(VERTICLE_NAME)).then(invocationOnMock -> CustomVerticle.class);
         when(injector.getInstance(CustomVerticle.class)).thenReturn(customVerticle);
 
         final Verticle result = verticleFactory.createVerticle(VERTICLE_NAME, classLoader);
 
         assertNotNull(result);
         assertTrue(result instanceof CustomVerticle);
-    }
-
-    static class InvalidClass {
-
     }
 
     static class CustomVerticle implements Verticle {
